@@ -1,20 +1,34 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <div id="app"> <BudgetList :list="list" /> </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import Vue from 'vue';
+import BudgetList from './components/BudgetList.vue';
 
 export default Vue.extend({
   name: 'App',
   components: {
-    HelloWorld
-  }
-})
+    BudgetList,
+  },
+  data: () => ({
+    l: [1, 2],
+    list: {
+      1: {
+        type: 'INCOME',
+        value: 100,
+        comment: 'Some comment',
+        id: 1,
+      },
+      2: {
+        type: 'OUTCOME',
+        value: -50,
+        comment: 'Some comment 2',
+        id: 2,
+      },
+    },
+  }),
+});
 </script>
 
 <style>
