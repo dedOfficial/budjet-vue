@@ -1,18 +1,25 @@
 <template>
-  <div id="app"> <BudgetList :list="list" /> </div>
+  <div id="app">
+    <Form @submitForm="onFormSubmit" />
+    <TotalBalance :total="totalBalance" />
+    <BudgetList :list="list" @deleteItem="onDeleteItem" />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import BudgetList from './components/BudgetList.vue';
+import TotalBalance from './components/TotalBalance.vue';
+import Form from './components/Form.vue';
 
 export default Vue.extend({
   name: 'App',
   components: {
     BudgetList,
+    TotalBalance,
+    Form,
   },
   data: () => ({
-    l: [1, 2],
     list: {
       1: {
         type: 'INCOME',
@@ -28,6 +35,28 @@ export default Vue.extend({
       },
     },
   }),
+  computed: {
+    totalBalance() {
+      return Object.values(this.list).reduce(
+        (acc: number, item: { value: number; [k: string]: number }) =>
+          acc + item.value,
+        0
+      );
+    },
+  },
+  methods: {
+    onDeleteItem(id: number | string) {
+      this.$delete(this.list, id);
+    },
+    onFormSubmit(data) {
+      const newObj = {
+        ...data,
+        id: String(Math.random()),
+      };
+
+      this.$set(this.list, newObj.id, newObj);
+    },
+  },
 });
 </script>
 
