@@ -2,7 +2,8 @@
   <div id="app">
     <Form @submitForm="onFormSubmit" />
     <TotalBalance :total="totalBalance" />
-    <BudgetList :list="list" @deleteItem="onDeleteItem" />
+    <BudgetList :list="list" @deleteItem="onDeleteItem" width="200px" />
+    <Dialog :dialogVisible="dialogVisible" @closeDialog="closeDialog" />
   </div>
 </template>
 
@@ -11,6 +12,7 @@ import Vue from 'vue';
 import BudgetList from './components/BudgetList.vue';
 import TotalBalance from './components/TotalBalance.vue';
 import Form from './components/Form.vue';
+import Dialog from './components/Dialog.vue';
 
 export default Vue.extend({
   name: 'App',
@@ -18,6 +20,7 @@ export default Vue.extend({
     BudgetList,
     TotalBalance,
     Form,
+    Dialog,
   },
   data: () => ({
     list: {
@@ -34,6 +37,8 @@ export default Vue.extend({
         id: 2,
       },
     },
+    dialogVisible: false,
+    listItemId: '',
   }),
   computed: {
     totalBalance() {
@@ -46,15 +51,23 @@ export default Vue.extend({
   },
   methods: {
     onDeleteItem(id: number | string) {
-      this.$delete(this.list, id);
+      this.dialogVisible = true;
+      this.listItemId = id;
     },
     onFormSubmit(data) {
-      const newObj = {
-        ...data,
-        id: String(Math.random()),
-      };
-
-      this.$set(this.list, newObj.id, newObj);
+      if (data?.value !== 0) {
+        const newObj = {
+          ...data,
+          id: String(Math.random()),
+        };
+        this.$set(this.list, newObj.id, newObj);
+      }
+    },
+    closeDialog(isConfirm: boolean) {
+      this.dialogVisible = false;
+      if (isConfirm) {
+        this.$delete(this.list, this.listItemId);
+      }
     },
   },
 });

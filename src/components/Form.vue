@@ -37,7 +37,7 @@ export default Vue.extend({
     formData: {
       type: 'INCOME',
       comment: '',
-      value: 0,
+      value: null,
     },
     rules: {
       type: [
@@ -57,10 +57,19 @@ export default Vue.extend({
     },
   }),
   methods: {
+    setCorrectValue() {
+      const { value, type } = this.formData;
+      if (type === 'OUTCOME' && value > 0) return -value;
+      else return value;
+    },
+
     onSubmit() {
       this.$refs.addItemForm.validate((valid: boolean) => {
         if (valid) {
-          this.$emit('submitForm', { ...this.formData });
+          this.$emit('submitForm', {
+            ...this.formData,
+            value: this.setCorrectValue(),
+          });
           this.$refs.addItemForm.resetFields();
         }
       });

@@ -2,13 +2,14 @@
   <div class="budget-list-wrap">
     <ElCard :header="header">
       <template v-if="!isEmpty">
-        <div class="list-item" v-for="(item, prop) in list" :key="prop">
-          <span class="budget-comment">{{ item.comment }}</span>
-          <span class="budget-value">{{ item.value }}</span>
-          <ElButton type="danger" size="mini" @click="deleteItem(item.id)"
-            >Delete</ElButton
-          >
-        </div>
+        <BudgetListItem
+          v-for="(item, prop) in list"
+          :key="prop"
+          :comment="item.comment"
+          :value="item.value"
+          :id="item.id"
+          @deleteItem="deleteItem"
+        />
       </template>
       <ElAlert v-else type="info" :title="emptyTitle" :closable="false" />
     </ElCard>
@@ -17,8 +18,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import BudgetListItem from './BudgetListItem.vue';
+
 export default Vue.extend({
   name: 'BudgetList',
+  components: {
+    BudgetListItem,
+  },
   props: {
     list: {
       type: Object,
@@ -46,16 +52,5 @@ export default Vue.extend({
 .budget-list-wrap {
   max-width: 500px;
   margin: auto;
-}
-.list-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-}
-
-.budget-value {
-  font-weight: bold;
-  margin-left: auto;
-  margin-right: 20px;
 }
 </style>
